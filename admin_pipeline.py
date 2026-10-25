@@ -25,9 +25,10 @@ def process_document(document_path):
         return {
             
            "status" : "skipped",
-            "document_path" : document_path,
+            "document_name": Path(document_path).name,
             "chunks_created": 0,
-            "message" : "document already exists in the vector_db"
+            "message": "document already exists in the vector database",
+            "success": False
         }
     if extension==".pdf" : 
         records=load_pdf(document_path)
@@ -53,9 +54,6 @@ def process_document(document_path):
      
     return {
         "document_name": Path(document_path).name,
-        "chunks_created": len(chunks)
+        "chunks_created": len(chunks),
+        "success": True
     }
-    
-        
-    
-       
