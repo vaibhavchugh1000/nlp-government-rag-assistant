@@ -178,7 +178,7 @@ def admin_process():
     try:
 
         result = process_document(str(document_path))
-
+                        
         return jsonify({
             "success": True,
             "result": result

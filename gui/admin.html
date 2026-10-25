@@ -1,142 +1,101 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
-    <title>Government RAG Assistant - Admin</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard | GovDoc AI</title>
+  <style>
+    :root{--navy:#102a56;--blue:#1d4ed8;--blue2:#2563eb;--ink:#172b4d;--muted:#64748b;--line:#dce6f3;--bg:#f4f7fb;--white:#fff;--green:#067647;--red:#b42318}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);font-size:14px}.layout{min-height:100vh;display:grid;grid-template-columns:248px minmax(0,1fr)}.sidebar{background:linear-gradient(180deg,#102a56,#122343);color:white;padding:26px 16px;display:flex;flex-direction:column;min-height:100vh}.brand{display:flex;align-items:center;gap:10px;padding:0 10px 34px;font-size:20px;font-weight:800;letter-spacing:-.5px}.brand-icon{width:38px;height:38px;display:grid;place-items:center;background:#ffffff16;border:1px solid #ffffff25;border-radius:12px;font-size:22px}.brand b{color:#fbbf24}.nav-label{padding:0 12px;margin:4px 0 10px;color:#90a8cc;font-size:10px;text-transform:uppercase;letter-spacing:1.6px;font-weight:800}.nav-link{display:flex;align-items:center;gap:12px;padding:13px 14px;margin:3px 0;border-radius:10px;color:#cbd8eb;text-decoration:none;font-weight:600}.nav-link.active{background:#ffffff19;color:white;box-shadow:inset 3px 0 #fbbf24}.nav-icon{width:20px;text-align:center;font-size:17px}.sidebar-bottom{margin-top:auto;border-top:1px solid #ffffff25;padding:18px 10px 0;color:#b8c8df;font-size:12px;line-height:1.6}.main{min-width:0}.topbar{height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 36px}.crumb{color:var(--muted);font-size:13px}.crumb strong{color:var(--ink)}.top-right{display:flex;align-items:center;gap:18px;color:var(--muted);font-size:12px}.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#e4edfc;color:var(--blue);font-weight:800}.content{max-width:1240px;margin:0 auto;padding:34px 36px 50px}.page-heading{display:flex;align-items:center;gap:16px;margin-bottom:26px}.heading-icon{width:58px;height:58px;border-radius:18px;background:#e1edff;color:var(--blue);display:grid;place-items:center;font-size:27px}.page-heading h1{margin:0 0 5px;font-size:27px;letter-spacing:-.8px;color:var(--navy)}.page-heading p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-bottom:20px}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:13px}.stat-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:#edf4ff;color:var(--blue);font-size:20px}.stat-label{font-size:12px;color:var(--muted);margin-bottom:5px}.stat-value{font-size:23px;font-weight:800;color:var(--navy);letter-spacing:-.5px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 4px 14px #1d355708;margin-bottom:20px;padding:24px}.card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}.card-header h2{font-size:17px;margin:0 0 5px;color:var(--navy)}.card-header p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}.badge{background:#eef4ff;color:#31568d;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:750;white-space:nowrap}.dropzone{border:1.5px dashed #b8cbe5;background:#f8faff;border-radius:13px;padding:28px 20px;text-align:center;transition:.2s}.dropzone.dragover{border-color:var(--blue);background:#eff6ff}.upload-icon{width:48px;height:48px;border-radius:15px;background:#e2edff;color:var(--blue);display:grid;place-items:center;font-size:24px;margin:0 auto 12px}.dropzone h3{font-size:14px;margin:0 0 6px}.dropzone p{margin:0 0 16px;color:var(--muted);font-size:12px}.file-picker{max-width:100%;font:inherit;font-size:12px;color:var(--muted)}.file-name{font-size:12px;color:#31568d;margin-top:12px;overflow-wrap:anywhere}.actions{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:17px}.primary{border:0;border-radius:10px;background:var(--blue);color:#fff;font-weight:750;font-size:13px;padding:12px 17px;cursor:pointer;transition:.15s}.primary:hover{background:#1e40af;transform:translateY(-1px)}.primary:disabled{opacity:.6;cursor:wait;transform:none}.secondary{display:inline-block;text-decoration:none;color:#31568d;font-weight:700;font-size:12px;padding:11px 13px;border:1px solid #d6e2f2;border-radius:9px;background:#fff}.message{display:none;margin-top:16px;padding:12px 14px;border-radius:10px;font-size:12px;line-height:1.55}.message.error{display:block;color:var(--red);background:#fef3f2;border:1px solid #fecdca}.message.success{display:block;color:var(--green);background:#ecfdf3;border:1px solid #abefc6}.message.info{display:block;color:#31568d;background:#eff6ff;border:1px solid #bfdbfe}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:500px}th{text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8191a8;background:#f8faff;padding:12px 14px;border-bottom:1px solid #e6edf6}td{padding:14px;border-bottom:1px solid #edf1f7;font-size:12px;color:#38516f}tbody tr:last-child td{border-bottom:0}.doc-name{display:flex;align-items:center;gap:10px;font-weight:700;color:#23416e}.doc-icon{height:32px;width:29px;border-radius:6px;background:#fff0f0;color:#d92d20;display:grid;place-items:center;font-size:9px;font-weight:900;border:1px solid #ffd5d2}.status-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:#ecfdf3;color:var(--green);padding:6px 9px;font-size:10px;font-weight:750}.status-dot{width:6px;height:6px;background:#12b76a;border-radius:50%}.empty{text-align:center;padding:28px 15px;color:#8293aa;font-size:12px}.footer{text-align:center;color:#9aa8bb;font-size:11px;padding:12px 0 0}
+    @media(max-width:1000px){.layout{grid-template-columns:205px minmax(0,1fr)}.content{padding:28px 24px}.topbar{padding:0 24px}}@media(max-width:720px){.layout{display:block}.sidebar{min-height:auto;padding:14px 16px}.brand{padding:0 4px 12px}.nav-label,.sidebar-bottom{display:none}.nav-link{display:inline-flex;margin:0 4px 0 0;padding:9px 11px;font-size:12px}.topbar{height:54px;padding:0 18px}.content{padding:24px 15px}.page-heading h1{font-size:22px}.heading-icon{width:48px;height:48px}.stats{grid-template-columns:1fr}.card{padding:18px}.card-header{flex-direction:column}.actions{justify-content:stretch}.actions .primary{width:100%}.top-right{gap:8px}}
+  </style>
 </head>
-
-
 <body>
-
-    <h1>Government RAG Assistant</h1>
-
-    <h2>Admin Panel</h2>
-
-
-    <!-- Documents currently stored -->
-
-    <h3>Documents Stored in the System</h3>
-
-    <ul>
-
-        {% for document in documents %}
-
-            <li>{{ document }}</li>
-
-        {% endfor %}
-
-    </ul>
-
-
-    <br>
-
-
-    <!-- Document Upload -->
-
-    <label for="document">
-
-        Select Government Document:
-
-    </label>
-
-    <br><br>
-
-
-    <input
-        type="file"
-        id="document"
-        accept=".pdf,.docx,.txt"
-    >
-
-
-    <br><br>
-
-
-    <button onclick="processDocument()">
-
-        Process Document
-
-    </button>
-
-
-    <br><br>
-
-
-    <div id="result"></div>
-
-
-    <script>
-
-        function processDocument() {
-
-            const selectedDocument =
-                document.getElementById("document").files[0];
-
-
-            if (!selectedDocument) {
-
-                document.getElementById("result").innerText =
-                    "Please select a document.";
-
-                return;
-            }
-
-
-            const formData = new FormData();
-
-            formData.append(
-                "document",
-                selectedDocument
-            );
-
-
-            fetch(
-                "/admin/process",
-                {
-                    method: "POST",
-                    body: formData
-                }
-            )
-
-
-            .then(response => response.json())
-
-
-            .then(data => {
-
-                if (data.success) {
-
-                    document.getElementById("result").innerText =
-                        data.result.message;
-
-                }
-
-                else {
-
-                    document.getElementById("result").innerText =
-                        data.message;
-
-                }
-
-            })
-
-
-            .catch(error => {
-
-                document.getElementById("result").innerText =
-                    "Error connecting to Flask server.";
-
-                console.error(error);
-
-            });
-
-        }
-
-    </script>
-
-
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-icon">⌕</span><span>GovDoc <b>AI</b></span></div>
+      <div class="nav-label">Workspace</div>
+      <a class="nav-link" href="/user"><span class="nav-icon">▤</span>Citizen Assistant</a>
+      <a class="nav-link active" href="/admin"><span class="nav-icon">▣</span>Admin Dashboard</a>
+      <div class="sidebar-bottom">Manage documents that power source-aware answers.</div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div class="crumb">Workspace <span aria-hidden="true">/</span> <strong>Admin Dashboard</strong></div><div class="top-right"><span>Knowledge base management</span><span class="avatar">A</span></div></header>
+      <div class="content">
+        <div class="page-heading"><div class="heading-icon">▣</div><div><h1>Knowledge Base</h1><p>Upload and manage the documents used by the Government RAG Assistant.</p></div></div>
+        <section class="stats">
+          <div class="stat"><div class="stat-icon">▤</div><div><div class="stat-label">Documents available</div><div class="stat-value" id="documentCount">{{ documents|length }}</div></div></div>
+          <div class="stat"><div class="stat-icon">↥</div><div><div class="stat-label">Supported formats</div><div class="stat-value">3</div></div></div>
+          <div class="stat"><div class="stat-icon">◈</div><div><div class="stat-label">Knowledge base</div><div class="stat-value" style="font-size:18px">Document RAG</div></div></div>
+        </section>
+        <section class="card">
+          <div class="card-header"><div><h2>Add a government document</h2><p>Choose a file to process and add it to the searchable knowledge base.</p></div><span class="badge">PDF · DOCX · TXT</span></div>
+          <form id="uploadForm">
+            <div class="dropzone" id="dropzone">
+              <div class="upload-icon">↥</div>
+              <h3>Choose a document to upload</h3>
+              <p>Supported file types: PDF, DOCX and TXT</p>
+              <input class="file-picker" type="file" id="document" name="document" accept=".pdf,.docx,.txt" required>
+              <div class="file-name" id="fileName">No file selected</div>
+            </div>
+            <div class="actions"><button type="submit" class="primary" id="processButton">Process document&nbsp; →</button></div>
+            <div id="result" class="message" role="status" aria-live="polite"></div>
+          </form>
+        </section>
+        <section class="card">
+          <div class="card-header"><div><h2>Documents stored in the system</h2><p>Files currently listed in the application's document inventory.</p></div><span class="badge" id="inventoryBadge">{{ documents|length }} document(s)</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Document</th><th>Format</th><th>Status</th></tr></thead>
+              <tbody id="documentList">
+                {% for document in documents %}
+                <tr><td><div class="doc-name"><span class="doc-icon">{{ document.rsplit('.', 1)[-1]|upper if '.' in document else 'DOC' }}</span><span>{{ document }}</span></div></td><td>{{ document.rsplit('.', 1)[-1]|upper if '.' in document else '—' }}</td><td><span class="status-pill"><span class="status-dot"></span>Available</span></td></tr>
+                {% else %}
+                <tr><td colspan="3"><div class="empty">No documents are listed yet. Upload a document above to get started.</div></td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <div class="footer">GovDoc AI · Knowledge base administration</div>
+      </div>
+    </main>
+  </div>
+  <script>
+    const fileInput = document.getElementById("document");
+    const fileName = document.getElementById("fileName");
+    const uploadForm = document.getElementById("uploadForm");
+    const resultDiv = document.getElementById("result");
+    const processButton = document.getElementById("processButton");
+    const dropzone = document.getElementById("dropzone");
+    fileInput.addEventListener("change", updateFileName);
+    function updateFileName() { fileName.textContent = fileInput.files.length ? fileInput.files[0].name : "No file selected"; }
+    ["dragenter","dragover"].forEach(name => dropzone.addEventListener(name, event => { event.preventDefault(); dropzone.classList.add("dragover"); }));
+    ["dragleave","drop"].forEach(name => dropzone.addEventListener(name, event => { event.preventDefault(); dropzone.classList.remove("dragover"); }));
+    dropzone.addEventListener("drop", event => { if (event.dataTransfer.files.length) { fileInput.files = event.dataTransfer.files; updateFileName(); } });
+    uploadForm.addEventListener("submit", processDocument);
+    async function processDocument(event) {
+      event.preventDefault();
+      const selectedDocument = fileInput.files[0];
+      if (!selectedDocument) { showResult("Please select a document first.", "error"); return; }
+      const extension = selectedDocument.name.split(".").pop().toLowerCase();
+      if (!["pdf","docx","txt"].includes(extension)) { showResult("Unsupported file type. Please choose a PDF, DOCX, or TXT file.", "error"); return; }
+      const formData = new FormData(); formData.append("document", selectedDocument);
+      processButton.disabled = true; processButton.textContent = "Processing document…"; showResult("Uploading and processing your document. This may take a moment.", "info");
+      try {
+        const response = await fetch("/admin/process", {method:"POST", body:formData});
+        let data;
+        try { data = await response.json(); } catch (_) { throw new Error("The server returned an unreadable response."); }
+        if (!response.ok || !data.success) throw new Error(data.message || "Document processing failed.");
+        showResult(data.result?.message || data.message || "Document processed successfully.", "success");
+        // The existing endpoint does not return an updated document inventory, so reload
+        // to let Flask rebuild the list from its own source of truth.
+        fileInput.value = ""; updateFileName();
+        setTimeout(() => window.location.reload(), 1200);
+      } catch (error) { showResult(error.message || "Error connecting to Flask server.", "error"); console.error(error); }
+      finally { processButton.disabled = false; processButton.textContent = "Process document →"; }
+    }
+    function showResult(message, type) { resultDiv.textContent = message; resultDiv.className = "message" + (type ? " " + type : ""); }
+  </script>
 </body>
-
 </html>

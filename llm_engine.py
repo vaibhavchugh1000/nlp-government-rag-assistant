@@ -12,7 +12,7 @@ def generate_response(prompt):
         
         raise ValueError("prompt cannot be empty")
     
-    response=client.models.generate_content(model="gemini-3.6-flash",contents=prompt)
+    response=client.models.generate_content(model="gemini-3.5-flash-lite",contents=prompt)
     
     return response.text
     

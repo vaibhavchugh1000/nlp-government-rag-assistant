@@ -4,3 +4,4 @@ __pycache__/
 .env
 vector_db/chroma/
 .vscode/
+data/documents/
