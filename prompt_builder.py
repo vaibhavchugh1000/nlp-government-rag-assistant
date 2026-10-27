@@ -100,8 +100,12 @@ Government Document Context:
 
 Structure your response using these sections:
 
+Structure your response using these sections:
+
 1. Direct Answer:
-   Answer the user's question first in 2–4 concise sentences.
+   Answer the user's question first in 2–3 concise sentences.
+   Summarize the main conclusion without repeating the
+   individual points that will appear under Key Findings.
 
 2. Key Findings:
    Present the main findings from the provided government
@@ -112,6 +116,12 @@ Do not invent facts or make unsupported predictions.
 
 If the context does not contain enough information,
 clearly state this limitation.
+
+Return the two sections with the exact headings
+"Direct Answer:" and "Key Findings:".
+Put each heading on a separate line.
+Use a new line for every key finding.
+Format each key finding as a bullet point starting with "-".
 """
 
     return prompt.strip()

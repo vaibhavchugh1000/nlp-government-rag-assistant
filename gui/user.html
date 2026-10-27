@@ -80,7 +80,34 @@
         let data;
         try { data = await response.json(); } catch (_) { throw new Error("The server returned an unreadable response."); }
         if (!response.ok || !data.success) throw new Error(data.message || "Unable to answer this question.");
-        answerDiv.textContent = data.result?.answer || "No answer was returned.";
+        const answer = data.result?.answer || "No answer was returned.";
+
+        answerDiv.replaceChildren();
+
+        let currentList = null;
+
+        answer.split("\n").forEach(line => {
+        line = line.trim();
+
+        if (!line) return;
+
+        if (line.startsWith("- ")) {
+        if (!currentList) {
+            currentList = document.createElement("ul");
+            answerDiv.appendChild(currentList);
+        }
+
+        const item = document.createElement("li");
+        item.textContent = line.substring(2);
+        currentList.appendChild(item);
+        } else {
+        currentList = null;
+
+        const paragraph = document.createElement("p");
+        paragraph.textContent = line;
+        answerDiv.appendChild(paragraph);
+       }
+       });
         languageDiv.textContent = data.result?.language || "Not detected";
         displaySources(data.result?.sources || []);
         answerStatus.style.display = "inline-flex";
