@@ -98,7 +98,20 @@ answer in :
 Government Document Context:
 {context}
 
-Provide a clear and concise answer.
+Structure your response using these sections:
+
+1. Direct Answer:
+   Answer the user's question first in 2–4 concise sentences.
+
+2. Key Findings:
+   Present the main findings from the provided government
+   document context as clear bullet points.
+
+Use only information supported by the provided context.
+Do not invent facts or make unsupported predictions.
+
+If the context does not contain enough information,
+clearly state this limitation.
 """
 
     return prompt.strip()
