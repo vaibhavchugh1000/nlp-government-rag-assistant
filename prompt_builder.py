@@ -70,9 +70,18 @@ def build_prompt(query, retrieved_documents,language):
 
             source = document_name
 
-        context_parts.append(
-            f"[Source {index}: {source}]\n{text}"
+        evidence_id = document.get(
+           "evidence_id",
+            f"E{index:03d}"
         )
+
+        context_parts.append(
+           f"[Evidence ID: {evidence_id}]\n"
+           f"[Source: {source}]\n"
+           f"[Chunk ID: {document.get('chunk_id', 'Unknown')}]\n"
+           f"{text}"
+        )
+        
 
     context = "\n\n".join(context_parts)
 
@@ -100,8 +109,6 @@ Government Document Context:
 
 Structure your response using these sections:
 
-Structure your response using these sections:
-
 1. Direct Answer:
    Answer the user's question first in 2–3 concise sentences.
    Summarize the main conclusion without repeating the
@@ -117,11 +124,20 @@ Do not invent facts or make unsupported predictions.
 If the context does not contain enough information,
 clearly state this limitation.
 
-Return the two sections with the exact headings
-"Direct Answer:" and "Key Findings:".
-Put each heading on a separate line.
-Use a new line for every key finding.
-Format each key finding as a bullet point starting with "-".
+Citation rules:
+- Each Key Finding must include the Evidence ID or IDs
+  that directly support that specific finding.
+- Examine all provided evidence chunks before selecting citations.
+- Do not automatically reuse E001 or any other ID for every finding.
+- Different findings may cite the same Evidence ID only when
+  that evidence genuinely supports each finding.
+- Use multiple Evidence IDs when multiple chunks jointly
+  support a finding.
+- Use only Evidence IDs explicitly provided in the context.
+- Never invent, modify, or guess an Evidence ID.
+- If no retrieved evidence supports a claim, do not present
+  that claim as an established fact.
+- Preserve the exact citation format, such as [E001] or [E003].
 """
 
     return prompt.strip()

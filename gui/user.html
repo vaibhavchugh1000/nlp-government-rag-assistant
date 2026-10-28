@@ -14,6 +14,48 @@
     .answer-card{padding:25px 26px}.answer-header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}.answer-header h2{font-size:18px;margin:0;color:var(--navy)}.status{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 10px;background:#ecfdf3;color:var(--green);font-size:11px;font-weight:750}.answer-body{line-height:1.8;font-size:14px;color:#263c5b;overflow-wrap:anywhere}.answer-body p{margin:0 0 12px}.answer-body ul,.answer-body ol{padding-left:22px}.answer-placeholder{padding:22px;background:#f8faff;border:1px dashed #d3deed;border-radius:12px;color:#7b8ba3;line-height:1.6}.answer-placeholder strong{display:block;color:#48617f;margin-bottom:5px}.meta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;padding-top:17px;border-top:1px solid #edf1f7}.meta-pill{font-size:12px;color:#526782;background:#f4f7fb;border:1px solid #e6edf6;border-radius:8px;padding:8px 11px}.source-section{margin-top:21px;padding-top:20px;border-top:1px solid #e8eef6}.source-title{display:flex;align-items:center;gap:9px;font-weight:800;font-size:14px;color:var(--navy);margin-bottom:13px}.source-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.source-card{min-width:0;border:1px solid #dce6f3;border-radius:12px;padding:14px;background:#fff}.source-top{display:flex;gap:10px;align-items:flex-start}.pdf-icon{width:34px;height:39px;flex:0 0 34px;border-radius:7px;background:#fff0f0;color:#d92d20;display:grid;place-items:center;font-size:10px;font-weight:900;border:1px solid #ffd5d2}.source-name{font-weight:750;font-size:12px;line-height:1.45;overflow-wrap:anywhere;color:#23416e}.source-page{font-size:11px;color:var(--muted);margin-top:5px}.source-excerpt{font-size:12px;color:#64748b;line-height:1.6;margin:11px 0 0;overflow-wrap:anywhere}.empty-sources{color:#94a3b8;font-size:13px;padding:12px 0}.message{display:none;margin-top:14px;padding:11px 13px;border-radius:9px;font-size:12px;line-height:1.5}.message.error{display:block;color:#b42318;background:#fef3f2;border:1px solid #fecdca}.message.info{display:block;color:#31568d;background:#eff6ff;border:1px solid #bfdbfe}.footer{text-align:center;color:#9aa8bb;font-size:11px;padding:12px 0 0}
     @media(max-width:1050px){.layout{grid-template-columns:205px minmax(0,1fr)}.source-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.content{padding:28px 24px}.topbar{padding:0 24px}}
     @media(max-width:720px){.layout{display:block}.sidebar{min-height:auto;padding:14px 16px}.brand{padding:0 4px 12px}.nav-label,.sidebar-bottom{display:none}.nav-link{display:inline-flex;margin:0 4px 0 0;padding:9px 11px;font-size:12px}.topbar{height:54px;padding:0 18px}.content{padding:24px 15px}.page-heading h1{font-size:22px}.heading-icon{width:48px;height:48px}.question-card,.answer-card{padding:19px}.source-grid{grid-template-columns:1fr}.top-right{gap:8px}}
+    .source-card {
+     scroll-margin-top: 24px;
+     }
+
+     .source-card:target {
+      border: 2px solid var(--blue2);
+      background: #f5f8ff;
+      }
+      .evidence-badge {
+      display: inline-block;
+      margin-top: 7px;
+      padding: 3px 7px;
+      border-radius: 5px;
+      background: #eaf2ff;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+      }
+
+      .evidence-link {
+       color: var(--blue2);
+       font-weight: 700;
+       text-decoration: underline;
+       cursor: pointer;
+       }
+  
+   
+      .source-full-text {
+    display: none;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--ink);
+}
+
+.source-card.expanded .source-full-text {
+    display: block;
+}
   </style>
 </head>
 <body>
@@ -49,7 +91,8 @@
       </div>
     </main>
   </div>
-  <script>
+  
+<script>
     const queryInput = document.getElementById("query");
     const questionForm = document.getElementById("questionForm");
     const askButton = document.getElementById("askButton");
@@ -61,88 +104,299 @@
     const messageDiv = document.getElementById("message");
     const answerStatus = document.getElementById("answerStatus");
 
-    document.querySelectorAll("[data-prompt]").forEach(button => button.addEventListener("click", () => {
-      queryInput.value = button.dataset.prompt; queryInput.focus();
-    }));
+    document.querySelectorAll("[data-prompt]").forEach(button => {
+        button.addEventListener("click", () => {
+            queryInput.value = button.dataset.prompt;
+            queryInput.focus();
+        });
+    });
+
     questionForm.addEventListener("submit", askQuestion);
 
     async function askQuestion(event) {
-      event.preventDefault();
-      const query = queryInput.value.trim();
-      if (!query) { showMessage("Please enter a question before submitting.", "error"); queryInput.focus(); return; }
-      askButton.disabled = true; askButton.innerHTML = '<span aria-hidden="true">◌</span> Searching documents…';
-      showMessage("Searching the knowledge base and preparing an answer…", "info");
-      answerDiv.textContent = "Processing your question…";
-      languageDiv.textContent = "—"; sourcesDiv.innerHTML = '<div class="empty-sources">Retrieving relevant sources…</div>';
-      sourceCount.textContent = "—"; sourceLabel.textContent = "(retrieving…)"; answerStatus.style.display = "none";
-      try {
-        const response = await fetch("/user/query", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({query})});
-        let data;
-        try { data = await response.json(); } catch (_) { throw new Error("The server returned an unreadable response."); }
-        if (!response.ok || !data.success) throw new Error(data.message || "Unable to answer this question.");
-        const answer = data.result?.answer || "No answer was returned.";
+        event.preventDefault();
 
-        answerDiv.replaceChildren();
+        const query = queryInput.value.trim();
 
-        let currentList = null;
-
-        answer.split("\n").forEach(line => {
-        line = line.trim();
-
-        if (!line) return;
-
-        if (line.startsWith("- ")) {
-        if (!currentList) {
-            currentList = document.createElement("ul");
-            answerDiv.appendChild(currentList);
+        if (!query) {
+            showMessage("Please enter a question before submitting.", "error");
+            queryInput.focus();
+            return;
         }
 
-        const item = document.createElement("li");
-        item.textContent = line.substring(2);
-        currentList.appendChild(item);
-        } else {
-        currentList = null;
+        askButton.disabled = true;
+        askButton.textContent = "Searching documents…";
+        showMessage("Searching the knowledge base and preparing an answer…", "info");
 
-        const paragraph = document.createElement("p");
-        paragraph.textContent = line;
-        answerDiv.appendChild(paragraph);
-       }
-       });
-        languageDiv.textContent = data.result?.language || "Not detected";
-        displaySources(data.result?.sources || []);
-        answerStatus.style.display = "inline-flex";
-        showMessage("", "");
-      } catch (error) {
-        answerDiv.textContent = error.message || "Error connecting to Flask server.";
-        languageDiv.textContent = "—"; sourcesDiv.innerHTML = '<div class="empty-sources">Sources are unavailable because the request did not complete.</div>';
-        sourceCount.textContent = "0"; sourceLabel.textContent = "(0)"; showMessage(error.message || "Error connecting to Flask server.", "error");
-        console.error(error);
-      } finally { askButton.disabled = false; askButton.innerHTML = '<span aria-hidden="true">➤</span> Ask question'; }
+        answerDiv.textContent = "Processing your question…";
+        languageDiv.textContent = "—";
+        sourcesDiv.innerHTML =
+            '<div class="empty-sources">Retrieving relevant sources…</div>';
+        sourceCount.textContent = "—";
+        sourceLabel.textContent = "(retrieving…)";
+        answerStatus.style.display = "none";
+
+        try {
+            const response = await fetch("/user/query", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query })
+            });
+
+            let data;
+
+            try {
+                data = await response.json();
+            } catch (_) {
+                throw new Error("The server returned an unreadable response.");
+            }
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || "Unable to answer this question.");
+            }
+
+            const answer = data.result?.answer || "No answer was returned.";
+            const sources = Array.isArray(data.result?.sources)
+                ? data.result.sources
+                : [];
+            console.log("Retrieved sources:", sources);
+            console.log("Evidence IDs:", sources.map(source => source?.evidence_id));    
+
+            const validEvidenceIds = new Set(
+                sources
+                    .map(source => source?.evidence_id)
+                    .filter(id => typeof id === "string" && /^E\d{3}$/.test(id))
+            );
+
+            // Create source cards and their matching HTML IDs first.
+            displaySources(sources);
+
+            // Render the answer while preserving headings and bullet lists.
+            answerDiv.replaceChildren();
+
+            let currentList = null;
+
+            answer.split("\n").forEach(line => {
+                line = line.trim();
+
+                if (!line) return;
+
+                if (line.startsWith("- ")) {
+                    if (!currentList) {
+                        currentList = document.createElement("ul");
+                        answerDiv.appendChild(currentList);
+                    }
+
+                    const item = document.createElement("li");
+
+                    appendTextWithEvidenceLinks(
+                        item,
+                        line.substring(2),
+                        validEvidenceIds
+                    );
+
+                    currentList.appendChild(item);
+                } else {
+                    currentList = null;
+
+                    const paragraph = document.createElement("p");
+
+                    appendTextWithEvidenceLinks(
+                        paragraph,
+                        line,
+                        validEvidenceIds
+                    );
+
+                    answerDiv.appendChild(paragraph);
+                }
+            });
+
+            languageDiv.textContent = data.result?.language || "Not detected";
+            answerStatus.style.display = "inline-flex";
+            showMessage("", "");
+
+        } catch (error) {
+            answerDiv.textContent =
+                error.message || "Error connecting to Flask server.";
+
+            languageDiv.textContent = "—";
+            sourcesDiv.innerHTML =
+                '<div class="empty-sources">Sources are unavailable because the request did not complete.</div>';
+
+            sourceCount.textContent = "0";
+            sourceLabel.textContent = "(0)";
+
+            showMessage(
+                error.message || "Error connecting to Flask server.",
+                "error"
+            );
+
+            console.error(error);
+
+        } finally {
+            askButton.disabled = false;
+            askButton.textContent = "➤ Ask question";
+        }
     }
+
     function displaySources(sources) {
-      sourcesDiv.innerHTML = "";
-      const list = Array.isArray(sources) ? sources : [];
-      sourceCount.textContent = String(list.length); sourceLabel.textContent = `(${list.length})`;
-      if (!list.length) { sourcesDiv.innerHTML = '<div class="empty-sources">No sources were returned for this answer.</div>'; return; }
-      list.forEach((source, index) => {
-        const item = (source && typeof source === "object") ? source : {text:String(source)};
-        const metadata = item.metadata && typeof item.metadata === "object" ? item.metadata : {};
-        const name = item.document_name || metadata.document_name || item.source || item.file_name || "Retrieved document";
-        const page = item.page_number ?? metadata.page_number ?? item.page;
-        const excerpt = item.text || item.content || item.page_content || metadata.text || "";
-        const card = document.createElement("article"); card.className = "source-card";
-        const top = document.createElement("div"); top.className = "source-top";
-        const icon = document.createElement("div"); icon.className = "pdf-icon"; icon.textContent = fileType(name);
-        const info = document.createElement("div"); info.style.minWidth = "0";
-        const title = document.createElement("div"); title.className = "source-name"; title.textContent = name;
-        const pageText = document.createElement("div"); pageText.className = "source-page"; pageText.textContent = page !== undefined && page !== null ? `Page ${page}` : `Source ${index + 1}`;
-        info.append(title, pageText); top.append(icon, info); card.append(top);
-        if (excerpt) { const preview = document.createElement("p"); preview.className = "source-excerpt"; preview.textContent = excerpt.length > 260 ? excerpt.slice(0, 260).trim() + "…" : excerpt; card.append(preview); }
-        sourcesDiv.append(card);
-      });
+        sourcesDiv.replaceChildren();
+
+        const list = Array.isArray(sources) ? sources : [];
+
+        sourceCount.textContent = String(list.length);
+        sourceLabel.textContent = `(${list.length})`;
+
+        if (!list.length) {
+            sourcesDiv.innerHTML =
+                '<div class="empty-sources">No sources were returned for this answer.</div>';
+            return;
+        }
+
+        list.forEach((source, index) => {
+            const item = source && typeof source === "object"
+                ? source
+                : { text: String(source) };
+
+            const metadata = item.metadata &&
+                typeof item.metadata === "object"
+                ? item.metadata
+                : {};
+
+            const name = item.document_name ||
+                metadata.document_name ||
+                item.source ||
+                item.file_name ||
+                "Retrieved document";
+
+            const page = item.page_number ??
+                metadata.page_number ??
+                item.page;
+
+            const excerpt = item.text ||
+                item.content ||
+                item.page_content ||
+                metadata.text ||
+                "";
+
+            const evidenceId = item.evidence_id;
+
+            const card = document.createElement("article");
+            card.className = "source-card";
+
+            if (typeof evidenceId === "string" &&
+                /^E\d{3}$/.test(evidenceId)) {
+                card.id = `source-${evidenceId}`;
+            }
+
+            const top = document.createElement("div");
+            top.className = "source-top";
+
+            const icon = document.createElement("div");
+            icon.className = "pdf-icon";
+            icon.textContent = fileType(name);
+
+            const info = document.createElement("div");
+            info.style.minWidth = "0";
+
+            const title = document.createElement("div");
+            title.className = "source-name";
+            title.textContent = name;
+
+            const pageText = document.createElement("div");
+            pageText.className = "source-page";
+            pageText.textContent =
+                page !== undefined && page !== null
+                    ? `Page ${page}`
+                    : `Source ${index + 1}`;
+
+            info.append(title, pageText);
+
+            if (typeof evidenceId === "string" &&
+                /^E\d{3}$/.test(evidenceId)) {
+                const badge = document.createElement("span");
+                badge.className = "evidence-badge";
+                badge.textContent = `[${evidenceId}]`;
+                info.appendChild(badge);
+            }
+
+            top.append(icon, info);
+            card.appendChild(top);
+
+             if (excerpt) {
+               const preview = document.createElement("p");
+               preview.className = "source-excerpt";
+               preview.textContent = excerpt.length > 260
+               ? excerpt.slice(0, 260).trim() + "…"
+               : excerpt;
+
+               card.appendChild(preview);
+
+               const fullText = document.createElement("div");
+               fullText.className = "source-full-text";
+               fullText.textContent = excerpt;
+
+               card.appendChild(fullText);
+              }
+
+            sourcesDiv.appendChild(card);
+        });
     }
-    function fileType(name) { const ext = String(name).split(".").pop().toUpperCase(); return ["PDF","DOCX","TXT"].includes(ext) ? ext : "DOC"; }
-    function showMessage(message, type) { messageDiv.textContent = message; messageDiv.className = "message" + (type ? " " + type : ""); messageDiv.style.display = message ? "block" : "none"; }
-  </script>
+
+    function appendTextWithEvidenceLinks(container, text, validEvidenceIds) {
+        const pattern = /\[(E\d{3})\]/g;
+
+        let lastIndex = 0;
+        let match;
+
+        while ((match = pattern.exec(text)) !== null) {
+            container.appendChild(
+                document.createTextNode(text.slice(lastIndex, match.index))
+            );
+
+            const evidenceId = match[1];
+
+            if (validEvidenceIds.has(evidenceId)) {
+                const link = document.createElement("a");
+                link.href = `#source-${evidenceId}`;
+                link.className = "evidence-link";
+                link.textContent = `[${evidenceId}]`;
+
+                link.addEventListener("click", () => {
+                const card = document.getElementById(`source-${evidenceId}`);
+
+                if (card) {
+                   card.classList.toggle("expanded");
+                }
+});
+
+
+                container.appendChild(link);
+            } else {
+                container.appendChild(
+                    document.createTextNode(match[0])
+                );
+            }
+
+            lastIndex = pattern.lastIndex;
+        }
+
+        container.appendChild(
+            document.createTextNode(text.slice(lastIndex))
+        );
+    }
+
+    function fileType(name) {
+        const ext = String(name).split(".").pop().toUpperCase();
+        return ["PDF", "DOCX", "TXT"].includes(ext) ? ext : "DOC";
+    }
+
+    function showMessage(message, type) {
+        messageDiv.textContent = message;
+        messageDiv.className = "message" + (type ? " " + type : "");
+        messageDiv.style.display = message ? "block" : "none";
+    }
+</script>
+
 </body>
 </html>
