@@ -1,3 +1,5 @@
+#retriever.py module 
+
 from embedding_model import create_embeddings
 from vector_store import collection
 
@@ -41,6 +43,7 @@ def retrieve_documents(query, top_k):
     ):
 
         retrieved_documents.append({
+            "evidence_id": f"E{len(retrieved_documents) + 1:03d}",
             "text": document,
             "metadata": metadata,
             "chunk_id": chunk_id,
